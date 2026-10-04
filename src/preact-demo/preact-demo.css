@@ -1,4 +1,4 @@
-.preact-layout { grid-template-columns: 420px minmax(520px, 1fr) minmax(520px, 1fr); }
+.preact-layout { grid-template-columns: 380px minmax(820px, 1.6fr) minmax(440px, 1fr); }
 .versions div, .status div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 20px; }
 .versions span { color: var(--muted); }
 .versions b { color: var(--preact); text-align: right; }

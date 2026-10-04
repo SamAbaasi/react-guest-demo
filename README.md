@@ -6,13 +6,25 @@ A small, runnable companion to the talk **"When React Is a Guest: Building Produ
 
 Everything on screen is real behaviour of the pinned versions below. Nothing is simulated except the API: the "fetch" is a local `setTimeout`.
 
+**Live demo:** https://samabaasi.github.io/react-guest-demo/ (built by GitHub Actions from `main`).
+
 ## Run it
 
 ```bash
 npm install        # also generates src/preact-demo/vendored-panel.js
 npm run dev        # http://localhost:5173
 npm test           # 27 tests, jsdom
+npm run demo       # builds all three Vite configs into dist/ and serves http://localhost:4173
 ```
+
+Open the pages through Vite. Opened directly as files, the browser cannot load their CSS and JavaScript.
+
+## Presenter steps
+
+Both pages share a step bar that follows the talk: 16 steps, each with a short "what to watch" line.
+**→** next step, **←** previous step, **Space** runs the step (the pressed button flashes, the counters to watch are outlined).
+The bottom-right corner is kept free for a speaker camera; add `?camera=0` to use the full screen.
+Steps 15 and 16 use the `noalias` and `onepreact` builds, so they need `npm run demo` (or the live demo).
 
 Two extra Vite configs for the Preact page:
 

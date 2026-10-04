@@ -6,11 +6,17 @@
     <title>React as a guest · the host's own Preact</title>
   </head>
   <body>
+    <div id="not-served" style="font:20px/1.5 system-ui,sans-serif;max-width:760px;margin:40px auto;padding:24px;border:3px solid #d33;border-radius:12px;background:#fff;color:#111">
+      <b>This page must be served by Vite.</b><br />
+      Opened as a file, the browser cannot load its CSS and JavaScript.<br />
+      Run <code>npm install</code> and <code>npm run dev</code>, then open <code>http://localhost:5173/preact.html</code>.
+    </div>
     <header class="top">
       <h1>The host itself: copies of Preact</h1>
       <nav id="panel-modes" class="modes"></nav>
       <a class="switch-page" href="./index.html">← Bridge page</a>
     </header>
+    <section id="stepbar" class="stepbar"></section>
 
     <main class="layout preact-layout">
       <section class="panel">

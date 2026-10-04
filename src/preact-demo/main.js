@@ -1,3 +1,4 @@
+import '@bpmn-io/form-js-viewer/dist/assets/form-js.css';
 import '@bpmn-io/form-js-editor/dist/assets/form-js-editor.css';
 import '@bpmn-io/form-js-editor/dist/assets/properties-panel.css';
 import '../demo/demo.css';
@@ -6,10 +7,14 @@ import './preact-demo.css';
 import { $ } from '../demo/ui.js';
 import { createRuleModule } from './ruleEntry.js';
 import { runLifecycleDemo } from './lifecycle.js';
+import { setupStepBar } from '../demo/stepbar.js';
+
+$('#not-served')?.remove();
 
 const versions = __VERSIONS__;
 const params = new URLSearchParams(location.search);
 const panelSource = params.get('panel') === 'vendored' ? 'vendored' : 'npm';
+const keep = params.get('camera') ? `&camera=${params.get('camera')}` : '';
 
 // ---- error capture (shown big on screen)
 const errors = [];
@@ -33,7 +38,7 @@ console.error = (...args) => {
 $('#panel-modes').innerHTML = [
   ['npm', 'FeelEntry from npm @bpmn-io/properties-panel'],
   ['vendored', 'FeelEntry from vendored copy']
-].map(([key, label]) => `<a href="?panel=${key}" class="${key === panelSource ? 'active' : ''}">${label}</a>`).join('');
+].map(([key, label]) => `<a href="?panel=${key}${keep}" class="${key === panelSource ? 'active' : ''}">${label}</a>`).join('');
 
 $('#versions').innerHTML = `
   <div><span>Vite config</span><b>${__CONFIG_NAME__}</b></div>
@@ -77,5 +82,23 @@ function showStatus() {
 start().catch((e) => showError(`${e.name}: ${e.message}`));
 setInterval(showStatus, 300);
 
-$('#run-lifecycle').addEventListener('click', () => runLifecycleDemo($('#lifecycle-root'), $('#lifecycle')));
-$('#run-lifecycle-fast').addEventListener('click', () => runLifecycleDemo($('#lifecycle-root'), $('#lifecycle'), { unmountBeforeEffect: true }));
+const lifecycle = () => runLifecycleDemo($('#lifecycle-root'), $('#lifecycle'));
+const lifecycleFast = () => runLifecycleDemo($('#lifecycle-root'), $('#lifecycle'), { unmountBeforeEffect: true });
+$('#run-lifecycle').addEventListener('click', lifecycle);
+$('#run-lifecycle-fast').addEventListener('click', lifecycleFast);
+
+// Opens the "Rules" group so the custom entry is visible.
+async function openRules() {
+  const header = [...document.querySelectorAll('.bio-properties-panel-group-header')]
+    .find((h) => h.textContent.includes('Rules'));
+  if (!header) return;
+  if (!header.classList.contains('open')) header.click();
+  header.scrollIntoView({ block: 'center' });
+  header.classList.add('pressed');
+}
+
+setupStepBar($('#stepbar'), {
+  openRules,
+  lifecycle: async () => { lifecycle(); await new Promise((r) => setTimeout(r, 700)); },
+  lifecycleFast: async () => { lifecycleFast(); await new Promise((r) => setTimeout(r, 400)); }
+});

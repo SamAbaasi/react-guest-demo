@@ -30,13 +30,20 @@ export const forceOnePreact = {
   dedupe: ['preact', 'preact/hooks']
 };
 
-export function baseConfig(configName, cacheName) {
+/**
+ * @param {string} configName  shown on the Preact page
+ * @param {'default'|'noalias'|'onepreact'} variant  also the folder in the full build
+ */
+export function baseConfig(configName, variant) {
   return {
+    // Relative URLs: the build works from any folder (dist/, dist/noalias/, GitHub Pages).
+    base: './',
     // Each config pre-bundles dependencies differently, so each gets its own cache.
-    cacheDir: `node_modules/.vite-${cacheName}`,
+    cacheDir: `node_modules/.vite-${variant}`,
     plugins: [react({ include: /\.jsx$/ })],
     define: {
       __CONFIG_NAME__: JSON.stringify(configName),
+      __VARIANT__: JSON.stringify(variant),
       __VERSIONS__: JSON.stringify(versions)
     },
     build: {
