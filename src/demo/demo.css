@@ -1,0 +1,94 @@
+/* Built for screen recording at 1920×1080: big type, high contrast. */
+:root {
+  --bg: #0f1115;
+  --panel: #181b22;
+  --line: #2c313c;
+  --text: #f2f4f8;
+  --muted: #a9b1c1;
+  --accent: #61dafb;   /* React */
+  --preact: #b38cf5;   /* Preact */
+  --bad: #ff6b6b;
+  --good: #5ee08f;
+  --warn: #ffd166;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 22px;
+  color: var(--text);
+  background: var(--bg);
+}
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; background: var(--bg); }
+h1 { font-size: 30px; margin: 0; white-space: nowrap; }
+h2 { font-size: 22px; margin: 0 0 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+
+.top { display: flex; align-items: center; gap: 24px; padding: 14px 24px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.modes { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; }
+.modes a, .switch-page {
+  color: var(--text); text-decoration: none; padding: 8px 14px; border: 1px solid var(--line);
+  border-radius: 8px; font-size: 20px; background: var(--panel);
+}
+.modes a.active { border-color: var(--accent); color: var(--bg); background: var(--accent); font-weight: 700; }
+.switch-page { border-color: var(--preact); color: var(--preact); }
+
+.layout { display: grid; grid-template-columns: 340px minmax(420px, 1fr) minmax(560px, 1.25fr); gap: 16px; padding: 16px 24px; flex: 1; min-height: 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-height: 0; display: flex; flex-direction: column; }
+.summary { margin: 0 0 12px; color: var(--warn); line-height: 1.35; }
+.summary b { color: var(--text); }
+.toggle { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; color: var(--warn); }
+.toggle input { width: 24px; height: 24px; }
+
+.buttons { display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+.buttons button, button.small {
+  font: inherit; font-size: 21px; text-align: left; color: var(--text); background: #232836;
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; cursor: pointer;
+}
+.buttons button:hover { border-color: var(--accent); }
+.buttons button small { display: block; font-size: 16px; color: var(--muted); }
+button.small { font-size: 16px; padding: 4px 10px; }
+
+/* form-js host: light, like a real form */
+.form-host #form { background: #fff; color: #161616; border-radius: 10px; padding: 8px 16px; overflow: auto; flex: 1; font-size: 20px; }
+.form-host .fjs-container { --cds-font-size: 20px; font-size: 20px; }
+.form-host .fjs-form-field-label { font-size: 18px !important; }
+.form-host .fjs-input { font-size: 20px !important; }
+.form-data { margin: 12px 0 0; font-size: 20px; color: var(--warn); white-space: pre-wrap; }
+.bridge-slot { outline: 3px dashed var(--accent); outline-offset: 3px; border-radius: 6px; min-height: 52px; margin: 6px 0; }
+
+/* the React component */
+.picker { position: relative; font-size: 20px; }
+.picker-trigger { width: 100%; display: flex; justify-content: space-between; gap: 12px; align-items: center; font: inherit; padding: 10px 12px; border: 2px solid #0b6bcb; border-radius: 6px; background: #f3f8fe; color: #0b2545; cursor: pointer; }
+.picker-meta { font-size: 16px; color: #0b6bcb; }
+.picker-panel { border: 2px solid #0b6bcb; border-top: 0; border-radius: 0 0 6px 6px; padding: 8px; background: #fff; }
+.picker-search { width: 100%; font: inherit; padding: 6px 8px; }
+.picker-status { font-size: 17px; color: #444; margin: 6px 0; }
+.picker-list { list-style: none; margin: 0; padding: 0; }
+.picker-list button { width: 100%; text-align: left; font: inherit; background: none; border: 0; padding: 4px 6px; cursor: pointer; color: #161616; }
+.picker-list button:hover { background: #e5f0fb; }
+
+/* monitor */
+.counters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+.counter { background: #232836; border-radius: 10px; padding: 8px 10px; border: 2px solid transparent; }
+.counter b { display: block; font-size: 34px; line-height: 1.1; }
+.counter span { font-size: 16px; color: var(--muted); }
+.counter.bad { border-color: var(--bad); }
+.counter.bad b { color: var(--bad); }
+.log-head { display: flex; justify-content: space-between; align-items: center; }
+.log {
+  list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1;
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 24px; line-height: 1.35;
+}
+.log li { padding: 3px 4px; border-bottom: 1px solid #222632; overflow-wrap: anywhere; }
+.log time { color: var(--muted); }
+.log em { font-style: normal; font-weight: 700; }
+.log-action { color: var(--warn); font-weight: 700; padding-top: 10px !important; }
+.log-preact em { color: var(--preact); }
+.log-react em { color: var(--accent); }
+.log-timer em { color: var(--warn); }
+.log-bug { background: rgba(255, 107, 107, .12); }
+.log-bug em { color: var(--bad); }
+.log-ok em { color: var(--good); }
+
+@media (max-width: 1300px) {
+  body { height: auto; }
+  .layout { grid-template-columns: 1fr; }
+  .log { max-height: 60vh; }
+}

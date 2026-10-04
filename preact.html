@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React as a guest · the host's own Preact</title>
+  </head>
+  <body>
+    <header class="top">
+      <h1>The host itself: copies of Preact</h1>
+      <nav id="panel-modes" class="modes"></nav>
+      <a class="switch-page" href="./index.html">← Bridge page</a>
+    </header>
+
+    <main class="layout preact-layout">
+      <section class="panel">
+        <h2>Installed</h2>
+        <div id="versions" class="versions"></div>
+        <h2>Result</h2>
+        <div id="status" class="status"></div>
+        <h2>Errors</h2>
+        <ol id="errors" class="log errors"></ol>
+      </section>
+
+      <section class="panel editor-host">
+        <h2>form-js editor (select the field, open "Rules")</h2>
+        <div id="editor"></div>
+      </section>
+
+      <section class="panel monitor">
+        <div class="log-head">
+          <h2>Preact lifecycle order</h2>
+          <span>
+            <button type="button" id="run-lifecycle" class="small">normal</button>
+            <button type="button" id="run-lifecycle-fast" class="small">unmount before useEffect</button>
+          </span>
+        </div>
+        <div id="lifecycle-root" hidden></div>
+        <ol id="lifecycle" class="log"></ol>
+      </section>
+    </main>
+
+    <script type="module" src="/src/preact-demo/main.js"></script>
+  </body>
+</html>

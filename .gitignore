@@ -1,0 +1,6 @@
+node_modules/
+dist/
+dist-*/
+*.log
+src/preact-demo/vendored-panel.js
+.DS_Store

@@ -1,0 +1,10 @@
+.preact-layout { grid-template-columns: 420px minmax(520px, 1fr) minmax(520px, 1fr); }
+.versions div, .status div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 20px; }
+.versions span { color: var(--muted); }
+.versions b { color: var(--preact); text-align: right; }
+.status { margin-bottom: 14px; }
+.status .good { color: var(--good); }
+.status .bad { color: var(--bad); font-weight: 700; }
+.errors { font-size: 20px; max-height: 40vh; }
+.editor-host #editor { background: #fff; color: #161616; border-radius: 10px; flex: 1; overflow: auto; min-height: 520px; }
+.editor-host .fjs-editor-container { height: 100%; }

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React as a guest · bridge modes</title>
+  </head>
+  <body>
+    <header class="top">
+      <h1>React as a guest in a Preact host</h1>
+      <nav id="modes" class="modes"></nav>
+      <a class="switch-page" href="./preact.html">Preact page →</a>
+    </header>
+
+    <main class="layout">
+      <section class="panel actions" data-demo-control>
+        <h2>Do this</h2>
+        <p id="mode-summary" class="summary"></p>
+        <label id="generation-toggle" class="toggle" hidden>
+          <input type="checkbox" id="generation" /> add generation counter
+        </label>
+        <div id="buttons" class="buttons"></div>
+      </section>
+
+      <section class="panel form-host">
+        <h2>form-js (Preact)</h2>
+        <div id="form"></div>
+        <pre id="form-data" class="form-data"></pre>
+      </section>
+
+      <section class="panel monitor">
+        <div id="counters" class="counters"></div>
+        <div class="log-head">
+          <h2>Event log</h2>
+          <button type="button" id="clear-log" class="small">clear</button>
+        </div>
+        <ol id="log" class="log"></ol>
+      </section>
+    </main>
+
+    <script type="module" src="/src/demo/main.js"></script>
+  </body>
+</html>
