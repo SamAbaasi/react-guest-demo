@@ -1,52 +1,84 @@
 // The presenter steps: the demo follows the talk, one step at a time.
 //   →  next step      ←  previous step      Space  run this step
-// Each step opens a page (and mode), runs actions, and says what to watch.
 //
 // page:    'bridge' (index.html) or 'preact' (preact.html)
 // variant: which build: 'default', 'noalias', 'onepreact' (the last two need `npm run demo`)
 // run:     action names the page knows how to run
-// spot:    counters to highlight (bridge page)
+// ask:     shown BEFORE the step runs (never gives the answer away)
+// watch:   shown AFTER the step ran (the result)
+// spot:    counters to highlight; the others are dimmed (bridge page)
+// log:     regex; only matching log lines stay visible during this step
+
+const TRY1 = 'Try 1 · teaching version';
+const TRY2 = 'Try 2 · production, Oct–Nov 2025';
+const TRY3 = 'Try 3 · production today';
+const FIX = 'The fix · tested in this demo';
 
 export const STEPS = [
-  { section: 'Try 1 · one root per instance', page: 'bridge', query: { mode: 'naive' },
+  { section: TRY1, page: 'bridge', query: { mode: 'naive' },
     run: ['openPicker', 'typeFilter'], title: 'Type in Filter',
-    watch: 'The list is not filtered. New props never reach React.' },
-  { section: 'Try 1 · one root per instance', page: 'bridge', query: { mode: 'naive' },
+    ask: 'The filter is a prop. Will the list follow it?',
+    watch: 'The list is not filtered. New props never reach React.',
+    log: 'mount|render' },
+  { section: TRY1, page: 'bridge', query: { mode: 'naive' },
     run: ['reimportSameRows'], title: 'Re-import, fruit → Cherry',
-    watch: 'Form data says Cherry. The picker still says Banana.' },
+    ask: 'The form data changes to Cherry. What does the dropdown show?',
+    watch: 'Form data says Cherry. The dropdown still says Banana.' },
 
-  { section: 'Try 2 · registry keyed by field id', page: 'bridge', query: { mode: 'sharedKey' },
+  { section: TRY2, page: 'bridge', query: { mode: 'sharedKey' },
     run: ['openPicker', 'typeFilter'], title: 'Type in Filter',
-    watch: 'The list filters, the picker stays open: props sync works.', spot: ['rootRenders'] },
-  { section: 'Try 2 · registry keyed by field id', page: 'bridge', query: { mode: 'sharedKey' },
+    ask: 'Same filter, now with a registry. Watch the list and "opened 1×".',
+    watch: 'The list filters, the dropdown stays open: props sync works.', spot: ['rootRenders'],
+    log: 'props sync|createRoot' },
+  { section: TRY2, page: 'bridge', query: { mode: 'sharedKey' },
     run: ['hideShowSlow'], title: 'Hide/show × 3, slow',
-    watch: 'Works. Each time: "useEffect ran: cleanup registered".' },
-  { section: 'Try 2 · registry keyed by field id', page: 'bridge', query: { mode: 'sharedKey' },
+    ask: 'Hide and show the field, slowly, three times.',
+    watch: 'Works. Every time: "useEffect ran: cleanup registered".',
+    log: 'useEffect ran|cleanup|unmount\\(' },
+  { section: TRY2, page: 'bridge', query: { mode: 'sharedKey' },
     run: ['hideShowTimes'], title: 'Hide/show × 10, fast',
-    watch: 'Hidden before useEffect ran → no cleanup → the field stays EMPTY.', spot: ['onScreen'] },
+    ask: 'The same thing, fast. Watch the field.',
+    watch: 'Hidden before useEffect ran → no cleanup → the field stays EMPTY.', spot: ['onScreen'],
+    log: 'DETACHED|EMPTY|did not come back|useEffect ran' },
 
-  { section: 'Try 3 · per-instance key + deferred check', page: 'bridge', query: { mode: 'deferredCheck' },
+  { section: TRY3, page: 'bridge', query: { mode: 'deferredCheck' },
+    run: ['hideShowOnce'], title: 'One slow cycle',
+    ask: 'One slow hide and show. The cleanup will run. Will the root be unmounted?',
+    watch: 'Cleanup ran, but 150 ms later the div was gone: unmount SKIPPED.', spot: ['unmounted', 'alive'],
+    log: 'cleanup|timer|SKIPPED' },
+  { section: TRY3, page: 'bridge', query: { mode: 'deferredCheck' },
     run: ['hideShowTimes'], title: 'Hide/show × 10, fast',
-    watch: 'Nothing is ever unmounted: 11 roots alive, 11 document listeners.', spot: ['alive', 'leaked', 'listeners'] },
-  { section: 'Try 3 · per-instance key + deferred check', page: 'bridge', query: { mode: 'deferredCheck', generation: '1' },
+    ask: 'Ten fast cycles. How many React roots stay alive?',
+    watch: '11 roots alive, 11 document listeners, 1 dropdown on screen: 10 ghosts.', spot: ['alive', 'onScreen', 'listeners'],
+    log: 'SKIPPED' },
+  { section: TRY3, page: 'bridge', query: { mode: 'deferredCheck', generation: '1' },
     run: ['hideShowTimes'], title: 'Same, with a generation counter',
-    watch: 'Same numbers. The generation counter changes nothing.', spot: ['alive', 'leaked', 'listeners'] },
-  { section: 'Try 3 · per-instance key + deferred check', page: 'bridge', query: { mode: 'deferredCheck' },
+    ask: 'Now with a generation counter. Will the numbers change?',
+    watch: 'Same numbers. The generation counter changes nothing.', spot: ['alive', 'onScreen', 'listeners'],
+    log: 'SKIPPED' },
+  { section: TRY3, page: 'bridge', query: { mode: 'deferredCheck' },
     run: ['typeNotes'], title: 'Type in Notes',
-    watch: 'React re-renders for a field it does not use.', spot: ['rootRenders'] },
+    ask: 'Type in Notes. React does not use it. Watch root.render().',
+    watch: 'React renders again for a field it does not use.', spot: ['rootRenders'],
+    log: 'props sync' },
 
-  { section: 'The fix · refs, layout effects, always unmount', page: 'bridge', query: { mode: 'fixed' },
+  { section: FIX, page: 'bridge', query: { mode: 'fixed' },
     run: ['hideShowTimes', 'destroy'], title: 'Hide/show × 10, fast, then destroy',
-    watch: 'Every root is unmounted: alive 0, listeners 0.', spot: ['created', 'unmounted', 'alive', 'listeners'] },
-  { section: 'The fix · refs, layout effects, always unmount', page: 'bridge', query: { mode: 'fixed' },
+    ask: 'Ten fast cycles, then destroy the whole form.',
+    watch: 'Every root is unmounted: alive 0, listeners 0.', spot: ['created', 'unmounted', 'alive', 'listeners'],
+    log: 'unmount' },
+  { section: FIX, page: 'bridge', query: { mode: 'fixed' },
     run: ['openPicker', 'typeFilter', 'typeNotes'], title: 'Type in Filter, then Notes',
+    ask: 'Type in Filter, then in Notes. Watch root.render().',
     watch: 'Filter works, state stays, Notes adds no React render.', spot: ['rootRenders'] },
 
   { section: 'Preact · lifecycle order', page: 'preact', query: { panel: 'vendored' },
     run: ['lifecycle'], title: 'Mount, then unmount',
+    ask: 'Mount a component, then unmount it. Watch "div in DOM".',
     watch: 'Cleanups still see the div. Right after, Preact removes it.' },
   { section: 'Preact · lifecycle order', page: 'preact', query: { panel: 'vendored' },
     run: ['lifecycleFast'], title: 'Unmount before useEffect ran',
+    ask: 'Unmount it before useEffect has run.',
     watch: 'useEffect and its cleanup never run.' },
 
   { section: 'The host\'s own Preact', page: 'preact', query: { panel: 'npm' },
@@ -54,13 +86,15 @@ export const STEPS = [
     watch: 'Two Preact copies: hooks crash (__H), the properties panel is EMPTY.' },
   { section: 'The host\'s own Preact', page: 'preact', query: { panel: 'vendored' },
     run: ['openRules'], title: 'FeelEntry from the vendored copy',
-    watch: 'One Preact: the panel and the custom entry render. Type a rule: it is saved.' },
+    ask: 'Same editor, one Preact. Open "Rules".',
+    watch: 'The panel and the custom entry render. Type a rule: it is saved.' },
   { section: 'The host\'s own Preact', page: 'preact', variant: 'noalias', query: { panel: 'vendored' },
     run: [], title: 'Build without the Preact alias',
     watch: 'The editor has its own Preact 10.15.1: the editor is BLANK.' },
   { section: 'The host\'s own Preact', page: 'preact', variant: 'onepreact', query: { panel: 'npm' },
     run: ['openRules'], title: 'npm panel + two config lines',
-    watch: 'The npm FeelEntry works: no 4,000-line copy needed.' }
+    ask: 'The npm FeelEntry, with two lines of Vite config. Open "Rules".',
+    watch: 'It works: no 4,000-line copy needed.' }
 ];
 
 const FILES = { bridge: 'index.html', preact: 'preact.html' };
@@ -81,4 +115,9 @@ export function stepUrl(index) {
 export function stepAvailable(index) {
   const variant = STEPS[index].variant || 'default';
   return variant === 'default' || !import.meta.env.DEV;
+}
+
+/** The step of the current page (from ?step=), or undefined. */
+export function currentStep() {
+  return STEPS[Number(new URLSearchParams(location.search).get('step')) - 1];
 }

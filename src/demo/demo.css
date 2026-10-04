@@ -116,3 +116,26 @@ button.small { font-size: 16px; padding: 4px 10px; }
 /* keep the bottom-right corner free for the speaker camera (off with ?camera=0) */
 body.camera-safe .monitor { margin-bottom: 280px; }
 .toggle[hidden] { display: none; }
+
+/* presenter focus: dim what does not matter for this step */
+.counter.dim { opacity: .35; }
+.counter.spot b { font-size: 44px; }
+.log li.quiet { display: none; }
+
+/* smaller screens and video scaled down: keep everything inside the width */
+.layout { grid-template-columns: minmax(240px, 340px) minmax(0, 1fr) minmax(0, 1.25fr); }
+@media (max-width: 1600px) {
+  :root { font-size: 18px; }
+  h1 { font-size: 24px; }
+  .log { font-size: 20px; }
+  .counter b { font-size: 28px; }
+  .counter.spot b { font-size: 36px; }
+  .step-title { font-size: 22px; }
+  .step-watch { font-size: 20px; }
+  .step-num { font-size: 32px; }
+  .modes a, .switch-page { font-size: 16px; padding: 6px 10px; }
+}
+
+@media (max-width: 1300px) {
+  .layout, .preact-layout { grid-template-columns: 1fr; }
+}

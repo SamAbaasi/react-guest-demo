@@ -9,6 +9,7 @@ import { stats, onEvent, events, markAction, log, liveRoots, livePickers } from 
 import { makeSchema, INITIAL_DATA, scenarios, getData } from './scenarios.js';
 import { renderLogEntry, $ } from './ui.js';
 import { setupStepBar } from './stepbar.js';
+import { currentStep } from './steps.js';
 
 $('#not-served')?.remove();
 
@@ -65,7 +66,7 @@ const BUTTONS = [
   ['Destroy form', 'destroy', ''],
   ['Mount form', 'mount', '']
 ];
-const LABEL = Object.fromEntries(BUTTONS.map(([label, id]) => [id, label]));
+const LABEL = { ...Object.fromEntries(BUTTONS.map(([label, id]) => [id, label])), hideShowOnce: 'One slow hide/show' };
 
 $('#buttons').innerHTML = BUTTONS.map(([label, id, hint]) =>
   `<button type="button" data-action="${id}">${label}${hint ? `<small>${hint}</small>` : ''}</button>`).join('');
@@ -100,14 +101,19 @@ $('#buttons').addEventListener('click', (event) => {
 });
 
 // ---- monitor
-$('#clear-log').addEventListener('click', () => { $('#log').innerHTML = ''; });
-onEvent((entry) => {
+// During a presenter step, only the log lines that matter for that step stay visible.
+const focus = currentStep()?.log ? new RegExp(currentStep().log) : null;
+function addLogEntry(entry) {
+  const li = renderLogEntry(entry);
+  if (focus && entry.kind !== 'action' && !focus.test(entry.message)) li.classList.add('quiet');
   const list = $('#log');
-  list.append(renderLogEntry(entry));
+  list.append(li);
   while (list.children.length > 200) list.firstChild.remove();
   list.scrollTop = list.scrollHeight;
-});
-events.forEach((entry) => $('#log').append(renderLogEntry(entry)));
+}
+$('#clear-log').addEventListener('click', () => { $('#log').innerHTML = ''; });
+onEvent(addLogEntry);
+events.forEach(addLogEntry);
 
 let spotlight = [];
 function renderCounters() {
@@ -115,7 +121,7 @@ function renderCounters() {
   const leaked = Math.max(0, livePickers() - onScreen);
   const expectPicker = !!form && !getData(form).hidePicker;
   const counter = (key, value, label, bad = false) =>
-    `<div class="counter ${bad ? 'bad' : ''} ${spotlight.includes(key) ? 'spot' : ''}"><b>${value}</b><span>${label}</span></div>`;
+    `<div class="counter ${bad ? 'bad' : ''} ${spotlight.includes(key) ? 'spot' : spotlight.length ? 'dim' : ''}"><b>${value}</b><span>${label}</span></div>`;
   $('#counters').innerHTML = [
     counter('created', stats.rootsCreated, 'roots created'),
     counter('unmounted', stats.rootsUnmounted, 'roots unmounted'),
@@ -130,6 +136,7 @@ setInterval(renderCounters, 100);
 
 setupStepBar($('#stepbar'), {
   openPicker,
+  hideShowOnce: () => runAction('hideShowOnce'),
   ...Object.fromEntries(BUTTONS.map(([, id]) => [id, () => runAction(id)]))
 }, (keys) => { spotlight = keys; });
 

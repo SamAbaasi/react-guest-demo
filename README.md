@@ -21,10 +21,10 @@ Open the pages through Vite. Opened directly as files, the browser cannot load t
 
 ## Presenter steps
 
-Both pages share a step bar that follows the talk: 16 steps, each with a short "what to watch" line.
+Both pages share a step bar that follows the talk: 17 steps. Before a step runs, the bar asks a question; after it runs, it shows the result, so the answer is never given away. During a step, unrelated counters are dimmed and the log shows only the decisive lines.
 **→** next step, **←** previous step, **Space** runs the step (the pressed button flashes, the counters to watch are outlined).
 The bottom-right corner is kept free for a speaker camera; add `?camera=0` to use the full screen.
-Steps 15 and 16 use the `noalias` and `onepreact` builds, so they need `npm run demo` (or the live demo).
+Steps 16 and 17 use the `noalias` and `onepreact` builds, so they need `npm run demo` (or the live demo).
 
 Two extra Vite configs for the Preact page:
 

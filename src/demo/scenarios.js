@@ -98,6 +98,12 @@ export const scenarios = {
   async hideShowSlow(form, times = 3) {
     return scenarios.hideShowTimes(form, times, { pause: 200 });
   },
+  /** One slow cycle: the cleanup is registered, and we can watch what it does. */
+  async hideShowOnce(form) {
+    const done = await scenarios.hideShowTimes(form, 1, { pause: 200 });
+    await sleep(300);
+    return done;
+  },
   /** Same schema again: same Preact instances, same divs. New value for the picker. */
   async reimportSameRows(form) {
     await form.importSchema(makeSchema({ stableRows: true }), { ...getData(form), fruit: 'Cherry' });

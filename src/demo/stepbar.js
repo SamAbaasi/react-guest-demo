@@ -4,6 +4,11 @@ import { STEPS, stepUrl, stepAvailable } from './steps.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** Text shown before the step runs: the question if there is one. */
+function before(step) {
+  return step.run.length && step.ask ? step.ask : step.watch;
+}
+
 /**
  * @param {HTMLElement} bar
  * @param {Record<string, () => Promise<void>|void>} actions  what this page can run
@@ -28,7 +33,7 @@ export function setupStepBar(bar, actions, spot = () => {}) {
 
   if (!step) {
     bar.innerHTML = `<div class="step-main"><span class="step-section">Presenter steps</span>
-      <span class="step-watch">Press → to start (16 steps). Space runs a step.</span></div>
+      <span class="step-watch">Press → to start (${STEPS.length} steps). Space runs a step.</span></div>
       <div class="step-keys"><button type="button" data-go="next">▶</button></div>`;
   } else {
     bar.innerHTML = `
@@ -36,7 +41,7 @@ export function setupStepBar(bar, actions, spot = () => {}) {
       <div class="step-main">
         <span class="step-section">${step.section}</span>
         <span class="step-title">${step.title}</span>
-        <span class="step-watch">${step.watch}</span>
+        <span class="step-watch">${before(step)}</span>
       </div>
       <div class="step-keys">
         <button type="button" data-go="prev" title="previous (←)">◀</button>
@@ -57,8 +62,13 @@ export function setupStepBar(bar, actions, spot = () => {}) {
     }
     bar.classList.remove('running');
     bar.classList.add('done');
+    // Only now show the result, so the question is not answered in advance.
+    bar.querySelector('.step-watch').textContent = step.watch;
     running = false;
   }
+
+  // ?autorun=1 runs the step once the page has settled (used for screenshots).
+  if (params.get('autorun') === '1') setTimeout(run, 1500);
 
   bar.addEventListener('click', (event) => {
     const target = event.target.closest('[data-go]');
